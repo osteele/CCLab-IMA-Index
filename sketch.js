@@ -1,6 +1,7 @@
 const headerPaddingTop = 50;
 const headerHeight = 250;
 const headingMarginBottom = 20;
+const canvasPaddingHorizontal = 20;
 
 const colWidth = 350;
 const minRowHeight = 80;
@@ -19,7 +20,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth - 2 * canvasPaddingHorizontal, windowHeight);
 
   projects = Array.from(Object.values(data.rows).map((r) => r.obj)).map((o) =>
     renameKeys(o, lowerSnakeCase)
@@ -88,7 +89,7 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   const s = min(window.width / 3 / img.width, (headerHeight - topPadding) / img.height);
   const w = img.width * s;
   const c1 = w + 10;
-  const c2 = (2 * windowWidth) / 3;
+  const c2 = (2 * width) / 3;
 
   image(img, 0, topPadding, w, img.height * s);
 
@@ -103,10 +104,10 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   text(description, c1, topPadding, c2 - c1 - 10);
 
   textStyle(BOLD);
-  includeInstructions && instructions && text("Instructions", c2, topPadding, windowWidth / 3 - 10);
+  includeInstructions && instructions && text("Instructions", c2, topPadding, width / 3 - 10);
 
   textStyle(NORMAL);
-  includeInstructions && text(instructions, c2, 40, windowWidth / 3 - 10);
+  includeInstructions && text(instructions, c2, 40, width / 3 - 10);
 
   pop();
 }
@@ -133,7 +134,7 @@ function computeLayout() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth - 2 * canvasPaddingHorizontal, windowHeight);
 }
 
 function drawProject({ name, authors, x, y }, highlight) {
