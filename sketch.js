@@ -5,6 +5,7 @@ const maxRowHeight = 130;
 let rowHeight;
 let projects = [];
 let gridMarginLeft = 0;
+let lastMouseMoveTime;
 
 let data;
 
@@ -36,7 +37,7 @@ function draw() {
   logo();
   pop();
 
-  const selectedProject = findProjectUnderMouse();
+  const selectedProject = millis() < lastMouseMoveTime + 30000 && findProjectUnderMouse();
   if (selectedProject) {
     drawHeaderProject(selectedProject, { includeInstructions: true });
   } else {
@@ -153,6 +154,8 @@ function mousePressed() {
 }
 
 function mouseMoved() {
+  lastMouseMoveTime = millis();
+  // the following doesn't have any effect
   let project = findProjectUnderMouse();
   if (project) {
     cursor("HAND");
