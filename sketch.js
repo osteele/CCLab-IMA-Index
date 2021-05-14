@@ -1,4 +1,5 @@
 const colWidth = 350;
+const minRowHeight = 80;
 const maxRowHeight = 130;
 let rowHeight;
 let projects = [];
@@ -32,37 +33,42 @@ function draw() {
   textSize(40);
   text("Creative Coding Lab | Section 1", width / 2, 160)
 
-  let selectedProject = findProjectUnderMouse();
+  const selectedProject = findProjectUnderMouse();
   if (selectedProject) {
-    let { image: img, description, instructions } = selectedProject;
-    let s = min(window.width / 3 / img.width, 250 / img.height);
-    let w = img.width * s;
-    image(img, 0, 0, w, img.height * s);
-    // image(img, (width - w) / 2, 0, w, img.height * s);
-    background(255, 150);
-
-    textAlign(LEFT);
-    fill('black')
-    textSize(12);
-    let c1 = w + 10
-    let c2 = 2 * windowWidth / 3;
-    textStyle(BOLD);
-    text("Description", c1, 20, windowWidth / 3 - 10);
-    instructions && text("Instructions", c2, 20, windowWidth / 3 - 10);
-    textStyle(ITALIC);
-    text(description, c1, 40, c2 - c1 - 10);
-    textStyle(NORMAL);
-    text(instructions, c2, 40, windowWidth / 3 - 10);
+    drawHeaderProject(selectedProject);
   }
 
-  doLayout();
+  computeLayout();
   projects.forEach(p => drawProject(p, projectIsUnderMouse(p)));
 }
 
-function doLayout() {
+function drawHeaderProject({ image: img, description, instructions }) {
+  const s = min(window.width / 3 / img.width, 250 / img.height);
+  const w = img.width * s;
+  const c1 = w + 10;
+  const c2 = 2 * windowWidth / 3;
+
+  image(img, 0, 0, w, img.height * s);
+  background(255, 150);
+
+  textAlign(LEFT);
+  fill('black');
+  textSize(12);
+
+  textStyle(BOLD);
+  text("Description", c1, 20, windowWidth / 3 - 10);
+  instructions && text("Instructions", c2, 20, windowWidth / 3 - 10);
+  textStyle(ITALIC);
+  text(description, c1, 40, c2 - c1 - 10);
+  textStyle(NORMAL);
+  text(instructions, c2, 40, windowWidth / 3 - 10);
+}
+
+function computeLayout() {
   rowHeight = maxRowHeight;
   projects.forEach(p => p.y = Infinity);
-  for (; Math.max(...projects.map(p => p.y)) + rowHeight > height; rowHeight -= 10) {
+  const getBottom = () => Math.max(...projects.map(p => p.y)) + rowHeight;
+  for (; getBottom() > height && rowHeight > minRowHeight; rowHeight -= 10) {
     let cols = max(1, floor(width / colWidth));
     let tx = (width - cols * colWidth) / 2;
     projects.forEach((p, i) => {
@@ -72,6 +78,9 @@ function doLayout() {
       let y = 250 + rowHeight * row;
       projects[i] = { ...p, x, y, row, col };
     });
+  }
+  if (getBottom() > height) {
+    resizeCanvas(width, getBottom());
   }
 }
 
@@ -101,11 +110,11 @@ function drawProject({ name, authors, x, y }, highlight) {
   text(name, 0, 10, colWidth - 20)
 
   authors = withoutOxford(authors.split(/\s*&\s*/), ' & ');
-  textSize(13)
+  textSize(13);
   textStyle(NORMAL);
-  text(authors, 0, 40, colWidth - 20)
+  text(authors, 0, 40, colWidth - 20);
 
-  pop()
+  pop();
 }
 
 function mousePressed() {
