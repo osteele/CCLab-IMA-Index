@@ -30,6 +30,12 @@ function setup() {
 function draw() {
   background("white");
 
+  push();
+  translate(width - 10 - 200 - gridMarginLeft, height - 10 - 100);
+  scale(1 / 2);
+  logo();
+  pop();
+
   const selectedProject = findProjectUnderMouse();
   if (selectedProject) {
     drawHeaderProject(selectedProject, { includeInstructions: true });
@@ -55,6 +61,7 @@ function draw() {
 
   computeLayout();
   projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
+
 }
 
 function drawHeaderProject({ name, image: img, description, instructions }, { includeTitle, includeInstructions }) {
