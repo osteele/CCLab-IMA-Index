@@ -4,6 +4,7 @@ const minRowHeight = 80;
 const maxRowHeight = 130;
 let rowHeight;
 let projects = [];
+let gridMarginLeft = 0;
 
 let data;
 
@@ -36,7 +37,7 @@ function draw() {
     push();
     const pw = width * 2 / 3 + 20;
     const tx = -periodicEase(4 * frameCount, pw);
-    translate(tx % (pw * projects.length), 0);
+    translate(tx % (pw * projects.length) + gridMarginLeft, 0);
     for (let i = 0; i < projects.length + 2; i++) {
       drawHeaderProject(projects[i % projects.length], { includeTitle: true });
       translate(pw, 0);
@@ -83,17 +84,19 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
 }
 
 function computeLayout() {
+  const headingMarginBottom = 10;
   rowHeight = maxRowHeight;
   projects.forEach((p) => (p.y = Infinity));
   const getBottom = () => Math.max(...projects.map((p) => p.y)) + rowHeight;
   for (; getBottom() > height && rowHeight > minRowHeight; rowHeight -= 10) {
-    let cols = max(1, floor(width / colWidth));
-    let tx = (width - cols * colWidth) / 2;
+    const cols = max(1, floor(width / colWidth));
+    const tx = (width - cols * colWidth) / 2;
+    gridMarginLeft = tx;
     projects.forEach((p, i) => {
-      let col = i % cols;
-      let row = floor(i / cols);
-      let x = tx + colWidth * col;
-      let y = headerHeight + rowHeight * row;
+      const col = i % cols;
+      const row = floor(i / cols);
+      const x = tx + colWidth * col;
+      const y = headerHeight + headingMarginBottom + rowHeight * row;
       projects[i] = { ...p, x, y, row, col };
     });
   }
