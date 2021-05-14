@@ -29,18 +29,13 @@ function setup() {
 function draw() {
   background("white");
 
-  textAlign(CENTER);
-  fill("aliceblue");
-  textSize(40);
-  text("Creative Coding Lab | Section 1", width / 2, 160);
-
   const selectedProject = findProjectUnderMouse();
   if (selectedProject) {
     drawHeaderProject(selectedProject, { includeInstructions: true });
   } else {
     push();
-    const tx = -frameCount;
     const pw = width * 2 / 3 + 20;
+    const tx = -periodicEase(4 * frameCount, pw);
     translate(tx % (pw * projects.length), 0);
     for (let i = 0; i < projects.length + 2; i++) {
       drawHeaderProject(projects[i % projects.length], { includeTitle: true });
@@ -51,6 +46,11 @@ function draw() {
     noStroke();
     rect(0, 0, width, headerHeight)
   }
+
+  textAlign(CENTER);
+  fill("aliceblue");
+  textSize(40);
+  text("Creative Coding Lab | Section 1", width / 2, 160);
 
   computeLayout();
   projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
@@ -168,3 +168,17 @@ const withoutOxford = (ar, s) =>
   ar.length <= 2
     ? ar.join(s)
     : ar.slice(0, ar.length - 1).join(", ") + s + ar[ar.length - 1];
+
+function periodicEase(x, period) {
+  let q = floor(x / period) * period;
+  return easeInOutQuad(x % period, q, period, period);
+}
+
+// const periodicEase = (x, period) => floor(x / period) * period + ease(x % period);
+
+// const ease = x => easeInOut
+
+function easeInOutQuad(t, b, c, d) {
+  if ((t /= d / 2) < 1) return c / 2 * t * t + b;
+  return -c / 2 * ((--t) * (t - 2) - 1) + b;
+}
