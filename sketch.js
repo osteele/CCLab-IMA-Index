@@ -50,35 +50,37 @@ function draw() {
     drawHeaderProject(selectedProject, { includeInstructions: true });
     pop();
   } else {
-    push();
-    const pw = width * 2 / 3 + 20;
-    const tx = -periodicEase(4 * frameCount, pw);
-    translate(tx % (pw * projects.length) + gridMarginLeft, 0);
-    for (let i = 0; i < projects.length + 2; i++) {
-      drawHeaderProject(projects[i % projects.length], { includeTitle: true });
-      translate(pw, 0);
-    }
-    pop();
-
-    fill(255, 150);
-    noStroke();
-    rect(0, 0, width, headerPaddingTop + headerHeight);
-    linearGradientFill(0, 0, gridMarginLeft, 0, "#ffffff", "#ffffff00");
-    rect(0, headerPaddingTop, gridMarginLeft, headerHeight);
-    linearGradientFill(width - gridMarginLeft, 0, width, 0, "#ffffff00", "#ffffff");
-    rect(width - gridMarginLeft, headerPaddingTop, gridMarginLeft, headerHeight);
+    drawHeaderStrip();
   }
 
-  if (!selectedProject) {
-    textAlign(CENTER);
-    fill("aliceblue");
-    textSize(40);
-    text("Creative Coding Lab | Section 1", width / 2, 160);
-  }
+  textAlign(LEFT);
+  fill("aliceblue");
+  textSize(40);
+  text("Creative Coding Lab | Spring 2021 | Section 1", 260, 45);
 
   computeLayout();
   projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
 
+}
+
+function drawHeaderStrip() {
+  push();
+  const pw = width * 2 / 3 + 20;
+  const tx = -periodicEase(4 * frameCount, pw);
+  translate(tx % (pw * projects.length) + gridMarginLeft, 0);
+  for (let i = 0; i < projects.length + 2; i++) {
+    drawHeaderProject(projects[i % projects.length], { includeTitle: true });
+    translate(pw, 0);
+  }
+  pop();
+
+  fill(255, 150);
+  noStroke();
+  rect(0, 0, width, headerPaddingTop + headerHeight);
+  linearGradientFill(0, 0, gridMarginLeft, 0, "#ffffff", "#ffffff00");
+  rect(0, headerPaddingTop, gridMarginLeft, headerHeight);
+  linearGradientFill(width - gridMarginLeft, 0, width, 0, "#ffffff00", "#ffffff");
+  rect(width - gridMarginLeft, headerPaddingTop, gridMarginLeft, headerHeight);
 }
 
 function drawHeaderProject({ name, image: img, description, instructions }, { includeTitle, includeInstructions }) {
