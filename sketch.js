@@ -1,3 +1,4 @@
+const headerHeight = 250;
 const colWidth = 350;
 const minRowHeight = 80;
 const maxRowHeight = 130;
@@ -35,33 +36,45 @@ function draw() {
 
   const selectedProject = findProjectUnderMouse();
   if (selectedProject) {
-    drawHeaderProject(selectedProject);
+    drawHeaderProject(selectedProject, true);
+  } else {
+    push();
+    const tx = -frameCount;
+    const pw = width * 2 / 3;
+    translate(tx % (3 * pw), 0);
+    for (let i = 0; i < 10; i++) {
+      drawHeaderProject(projects[i]);
+      translate(pw, 0);
+    }
+    pop();
+    fill(255, 150);
+    noStroke();
+    rect(0, 0, width, headerHeight)
   }
 
   computeLayout();
   projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
 }
 
-function drawHeaderProject({ image: img, description, instructions }) {
+function drawHeaderProject({ image: img, description, instructions }, includeInstructions) {
   const s = min(window.width / 3 / img.width, 250 / img.height);
   const w = img.width * s;
   const c1 = w + 10;
   const c2 = (2 * windowWidth) / 3;
 
   image(img, 0, 0, w, img.height * s);
-  background(255, 150);
 
   textAlign(LEFT);
   fill("black");
   textSize(12);
 
   textStyle(BOLD);
-  text("Description", c1, 20, windowWidth / 3 - 10);
-  instructions && text("Instructions", c2, 20, windowWidth / 3 - 10);
+  // text("Description", c1, 20, windowWidth / 3 - 10);
+  includeInstructions && instructions && text("Instructions", c2, 20, windowWidth / 3 - 10);
   textStyle(ITALIC);
-  text(description, c1, 40, c2 - c1 - 10);
+  text(description, c1, 15, c2 - c1 - 10);
   textStyle(NORMAL);
-  text(instructions, c2, 40, windowWidth / 3 - 10);
+  includeInstructions && text(instructions, c2, 40, windowWidth / 3 - 10);
 }
 
 function computeLayout() {
@@ -75,7 +88,7 @@ function computeLayout() {
       let col = i % cols;
       let row = floor(i / cols);
       let x = tx + colWidth * col;
-      let y = 250 + rowHeight * row;
+      let y = headerHeight + rowHeight * row;
       projects[i] = { ...p, x, y, row, col };
     });
   }
