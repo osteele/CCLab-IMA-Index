@@ -58,9 +58,14 @@ function draw() {
       translate(pw, 0);
     }
     pop();
+
     fill(255, 150);
     noStroke();
-    rect(0, 0, width, headerPaddingTop + headerHeight)
+    rect(0, 0, width, headerPaddingTop + headerHeight);
+    linearGradientFill(0, 0, gridMarginLeft, 0, "#ffffff", "#ffffff00");
+    rect(0, headerPaddingTop, gridMarginLeft, headerHeight);
+    linearGradientFill(width - gridMarginLeft, 0, width, 0, "#ffffff00", "#ffffff");
+    rect(width - gridMarginLeft, headerPaddingTop, gridMarginLeft, headerHeight);
   }
 
   if (selectedProject) {
