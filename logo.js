@@ -1,4 +1,6 @@
 function logo() {
+    const wobbleAmp = 20;
+
     push();
     angleMode(DEGREES);
 
@@ -6,13 +8,13 @@ function logo() {
     noStroke();
 
     linearGradientFill(80, 0, 0, 80, "#FECF84", "#FD3936");
-    circle(0, 0, 165 + 10 * sin(millis() / 10));
+    circle(0, 0, 165 + wobbleAmp * sin(millis() / 10));
 
     translate(100, 0);
     linearGradientFill(80, 0, 0, 80, "#EBFE75", "#26CD8E");
-    circle(0, 0, 165 + 10 * sin(millis() / 15));
+    circle(0, 0, 165 + wobbleAmp * sin(millis() / 15));
 
-    const squareSize = 145 + 10 * sin(millis() / 18);
+    const squareSize = 145 + wobbleAmp * sin(millis() / 18);
     translate(30, -squareSize / 2);
     rotateAbout(10, squareSize / 2, squareSize / 2);
     linearGradientFill(squareSize, 0, 0, squareSize, "#98FBF3", "#893DFB");
