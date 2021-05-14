@@ -7,31 +7,31 @@ let projects = [];
 let data;
 
 function preload() {
-  data = loadTable("projects.csv", "header")
+  data = loadTable("projects.csv", "header");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  projects = Array.from(Object.values(data.rows).map(r => r.obj))
-    .map(o => renameKeys(o, lowerSnakeCase));
+  projects = Array.from(Object.values(data.rows).map((r) => r.obj)).map((o) =>
+    renameKeys(o, lowerSnakeCase)
+  );
 
-  projects.forEach(p => {
-    p.name = p.name.trim()
+  projects.forEach((p) => {
+    p.name = p.name.trim();
     const img_url = `assets/images/${p.name}.jpg`;
     p.image = loadImage(img_url);
   });
   shuffle(projects, true);
 }
 
-
 function draw() {
-  background('white');
+  background("white");
 
   textAlign(CENTER);
-  fill('aliceblue');
+  fill("aliceblue");
   textSize(40);
-  text("Creative Coding Lab | Section 1", width / 2, 160)
+  text("Creative Coding Lab | Section 1", width / 2, 160);
 
   const selectedProject = findProjectUnderMouse();
   if (selectedProject) {
@@ -39,20 +39,20 @@ function draw() {
   }
 
   computeLayout();
-  projects.forEach(p => drawProject(p, projectIsUnderMouse(p)));
+  projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
 }
 
 function drawHeaderProject({ image: img, description, instructions }) {
   const s = min(window.width / 3 / img.width, 250 / img.height);
   const w = img.width * s;
   const c1 = w + 10;
-  const c2 = 2 * windowWidth / 3;
+  const c2 = (2 * windowWidth) / 3;
 
   image(img, 0, 0, w, img.height * s);
   background(255, 150);
 
   textAlign(LEFT);
-  fill('black');
+  fill("black");
   textSize(12);
 
   textStyle(BOLD);
@@ -66,8 +66,8 @@ function drawHeaderProject({ image: img, description, instructions }) {
 
 function computeLayout() {
   rowHeight = maxRowHeight;
-  projects.forEach(p => p.y = Infinity);
-  const getBottom = () => Math.max(...projects.map(p => p.y)) + rowHeight;
+  projects.forEach((p) => (p.y = Infinity));
+  const getBottom = () => Math.max(...projects.map((p) => p.y)) + rowHeight;
   for (; getBottom() > height && rowHeight > minRowHeight; rowHeight -= 10) {
     let cols = max(1, floor(width / colWidth));
     let tx = (width - cols * colWidth) / 2;
@@ -85,31 +85,31 @@ function computeLayout() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight)
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function drawProject({ name, authors, x, y }, highlight) {
   push();
-  textAlign(CENTER)
-  translate(x, y)
+  textAlign(CENTER);
+  translate(x, y);
 
   if (highlight) {
     fill(200, 100);
     noStroke();
     rect(0, 0, colWidth, rowHeight, 10);
 
-    fill('red');
-    textSize(18)
+    fill("red");
+    textSize(18);
     text("Click to play", 0, 65, colWidth - 20);
   }
 
-  fill('black')
-  textFont('Roboto')
-  textSize(18)
+  fill("black");
+  textFont("Roboto");
+  textSize(18);
   textStyle(BOLD);
-  text(name, 0, 10, colWidth - 20)
+  text(name, 0, 10, colWidth - 20);
 
-  authors = withoutOxford(authors.split(/\s*&\s*/), ' & ');
+  authors = withoutOxford(authors.split(/\s*&\s*/), " & ");
   textSize(13);
   textStyle(NORMAL);
   text(authors, 0, 40, colWidth - 20);
@@ -120,28 +120,33 @@ function drawProject({ name, authors, x, y }, highlight) {
 function mousePressed() {
   let project = findProjectUnderMouse();
   if (project) {
-    window.open(project.url, 'project')
+    window.open(project.url, "project");
   }
 }
 
 function mouseMoved() {
   let project = findProjectUnderMouse();
   if (project) {
-    cursor('HAND');
+    cursor("HAND");
     // console.info('HAND')
   } else {
-    cursor('DEFAULT');
+    cursor("DEFAULT");
     // console.info('default');
   }
 }
 
 const findProjectUnderMouse = () => projects.find(projectIsUnderMouse);
-const projectIsUnderMouse = ({ x, y }) => x <= mouseX && mouseX < x + colWidth && y <= mouseY && mouseY < y + rowHeight;
+const projectIsUnderMouse = ({ x, y }) =>
+  x <= mouseX && mouseX < x + colWidth && y <= mouseY && mouseY < y + rowHeight;
 
-const lowerSnakeCase = s =>
-  s.replace(/ /g, '_').toLowerCase();
+const lowerSnakeCase = (s) => s.replace(/ /g, "_").toLowerCase();
 
 const renameKeys = (obj, keyTransformer) =>
-  Object.fromEntries(Object.entries(obj).map(([k, v]) => [keyTransformer(k), v]))
+  Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [keyTransformer(k), v])
+  );
 
-const withoutOxford = (ar, s) => ar.length <= 2 ? ar.join(s) : ar.slice(0, ar.length - 1).join(', ') + s + ar[ar.length - 1];
+const withoutOxford = (ar, s) =>
+  ar.length <= 2
+    ? ar.join(s)
+    : ar.slice(0, ar.length - 1).join(", ") + s + ar[ar.length - 1];
