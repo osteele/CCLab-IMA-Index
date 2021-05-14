@@ -32,13 +32,27 @@ function draw() {
   textSize(40);
   text("Creative Coding Lab | Section 1", width / 2, 160)
 
-  let p = findProjectUnderMouse();
-  if (p) {
-    let img = p.image;
-    let s = min(window.width / img.width, 250 / img.height);
+  let selectedProject = findProjectUnderMouse();
+  if (selectedProject) {
+    let { image: img, description, instructions } = selectedProject;
+    let s = min(window.width / 3 / img.width, 250 / img.height);
     let w = img.width * s;
-    image(img, (width - w) / 2, 0, w, img.height * s);
-    background(255, 150)
+    image(img, 0, 0, w, img.height * s);
+    // image(img, (width - w) / 2, 0, w, img.height * s);
+    background(255, 150);
+
+    textAlign(LEFT);
+    fill('black')
+    textSize(12);
+    let c1 = w + 10
+    let c2 = 2 * windowWidth / 3;
+    textStyle(BOLD);
+    text("Description", c1, 20, windowWidth / 3 - 10);
+    instructions && text("Instructions", c2, 20, windowWidth / 3 - 10);
+    textStyle(ITALIC);
+    text(description, c1, 40, c2 - c1 - 10);
+    textStyle(NORMAL);
+    text(instructions, c2, 40, windowWidth / 3 - 10);
   }
 
   doLayout();
