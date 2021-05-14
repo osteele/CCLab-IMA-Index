@@ -1,4 +1,4 @@
-const headerPaddingTop = 50;
+const headerPaddingTop = 55;
 const headerHeight = 250;
 const headingMarginBottom = 20;
 const canvasPaddingHorizontal = 20;
@@ -74,13 +74,14 @@ function drawHeaderStrip() {
   }
   pop();
 
-  fill(255, 150);
   noStroke();
+  fill(255, 100);
   rect(0, 0, width, headerPaddingTop + headerHeight);
-  linearGradientFill(0, 0, gridMarginLeft, 0, "#ffffff", "#ffffff00");
-  rect(0, headerPaddingTop, gridMarginLeft, headerHeight);
-  linearGradientFill(width - gridMarginLeft, 0, width, 0, "#ffffff00", "#ffffff");
-  rect(width - gridMarginLeft, headerPaddingTop, gridMarginLeft, headerHeight);
+
+  linearGradientFill(0, 0, 2 * gridMarginLeft, 0, "#ffffff", "#ffffff00");
+  rect(0, headerPaddingTop, 2 * gridMarginLeft, headerHeight);
+  linearGradientFill(width - 2 * gridMarginLeft, 0, width, 0, "#ffffff00", "#ffffff");
+  rect(width - 2 * gridMarginLeft, headerPaddingTop, 2 * gridMarginLeft, headerHeight);
 }
 
 function drawHeaderProject({ name, image: img, description, instructions }, { includeTitle, includeInstructions }) {
@@ -88,10 +89,11 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   translate(0, headerPaddingTop);
 
   const topPadding = includeTitle ? 20 : 10;
-  const s = min(window.width / 3 / img.width, (headerHeight - topPadding) / img.height);
+  const cw = (width - 2 * gridMarginLeft) / 3;
+  const s = min(cw / img.width, (headerHeight - topPadding) / img.height);
   const w = img.width * s;
-  const c1 = w + 10;
-  const c2 = (2 * width) / 3;
+  const c1 = cw + 10;
+  const c2 = 2 * cw;
 
   image(img, 0, topPadding, w, img.height * s);
 
@@ -109,7 +111,7 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   includeInstructions && instructions && text("Instructions", c2, topPadding, width / 3 - 10);
 
   textStyle(NORMAL);
-  includeInstructions && text(instructions, c2, 40, width / 3 - 10);
+  includeInstructions && text(instructions, c2, 40, 3 * cw - 10);
 
   pop();
 }
