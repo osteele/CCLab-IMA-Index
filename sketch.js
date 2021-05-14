@@ -19,7 +19,8 @@ function setup() {
     p.name = p.name.trim()
     const img_url = `assets/images/${p.name}.jpg`;
     p.image = loadImage(img_url);
-  })
+  });
+  shuffle(projects, true);
 }
 
 
