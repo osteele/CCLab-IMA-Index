@@ -68,7 +68,7 @@ function draw() {
     rect(width - gridMarginLeft, headerPaddingTop, gridMarginLeft, headerHeight);
   }
 
-  if (selectedProject) {
+  if (!selectedProject) {
     textAlign(CENTER);
     fill("aliceblue");
     textSize(40);
