@@ -1,13 +1,18 @@
+const headerPaddingTop = 50;
 const headerHeight = 250;
+const headingMarginBottom = 20;
+
 const colWidth = 350;
 const minRowHeight = 80;
 const maxRowHeight = 130;
 let rowHeight;
-let projects = [];
+
 let gridMarginLeft = 0;
-let lastMouseMoveTime;
 
 let data;
+let projects = [];
+
+let lastMouseMoveTime;
 
 function preload() {
   data = loadTable("projects.csv", "header");
@@ -32,14 +37,17 @@ function draw() {
   background("white");
 
   push();
-  translate(width - 10 - 200 - gridMarginLeft, height - 10 - 100);
-  scale(1 / 2);
+  translate(10 + gridMarginLeft, 5);
+  scale(1 / 4);
   logo();
   pop();
 
   const selectedProject = millis() < lastMouseMoveTime + 30000 && findProjectUnderMouse();
   if (selectedProject) {
+    push();
+    translate(gridMarginLeft, 0);
     drawHeaderProject(selectedProject, { includeInstructions: true });
+    pop();
   } else {
     push();
     const pw = width * 2 / 3 + 20;
@@ -52,13 +60,15 @@ function draw() {
     pop();
     fill(255, 150);
     noStroke();
-    rect(0, 0, width, headerHeight)
+    rect(0, 0, width, headerPaddingTop + headerHeight)
   }
 
-  textAlign(CENTER);
-  fill("aliceblue");
-  textSize(40);
-  text("Creative Coding Lab | Section 1", width / 2, 160);
+  if (selectedProject) {
+    textAlign(CENTER);
+    fill("aliceblue");
+    textSize(40);
+    text("Creative Coding Lab | Section 1", width / 2, 160);
+  }
 
   computeLayout();
   projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
@@ -66,6 +76,9 @@ function draw() {
 }
 
 function drawHeaderProject({ name, image: img, description, instructions }, { includeTitle, includeInstructions }) {
+  push();
+  translate(0, headerPaddingTop);
+
   const topPadding = includeTitle ? 20 : 10;
   const s = min(window.width / 3 / img.width, (headerHeight - topPadding) / img.height);
   const w = img.width * s;
@@ -89,10 +102,11 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
 
   textStyle(NORMAL);
   includeInstructions && text(instructions, c2, 40, windowWidth / 3 - 10);
+
+  pop();
 }
 
 function computeLayout() {
-  const headingMarginBottom = 10;
   rowHeight = maxRowHeight;
   projects.forEach((p) => (p.y = Infinity));
   const getBottom = () => Math.max(...projects.map((p) => p.y)) + rowHeight;
@@ -104,7 +118,7 @@ function computeLayout() {
       const col = i % cols;
       const row = floor(i / cols);
       const x = tx + colWidth * col;
-      const y = headerHeight + headingMarginBottom + rowHeight * row;
+      const y = headerPaddingTop + headerHeight + headingMarginBottom + rowHeight * row;
       projects[i] = { ...p, x, y, row, col };
     });
   }
