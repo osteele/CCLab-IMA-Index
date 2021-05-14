@@ -92,8 +92,8 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   const cw = (width - 2 * gridMarginLeft) / 3;
   const s = min(cw / img.width, (headerHeight - topPadding) / img.height);
   const w = img.width * s;
-  const c1 = cw + 10;
-  const c2 = 2 * cw;
+  const c1 = w + 10;
+  const c2 = c1 + cw * 0.6;
 
   image(img, 0, topPadding, w, img.height * s);
 
@@ -105,13 +105,13 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   includeTitle && text(name, 0, 15);
 
   textStyle(ITALIC);
-  text(description, c1, topPadding, c2 - c1 - 10);
+  text(description, c1, topPadding, c2 - c1 - 15);
 
   textStyle(BOLD);
   includeInstructions && instructions && text("Instructions", c2, topPadding, width / 3 - 10);
 
   textStyle(NORMAL);
-  includeInstructions && text(instructions, c2, 40, 3 * cw - 10);
+  includeInstructions && text(instructions, c2, 30, cw * 0.8);
 
   pop();
 }
