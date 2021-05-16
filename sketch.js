@@ -1,14 +1,3 @@
-const headerPaddingTop = 55;
-const headerHeight = 250;
-const headingMarginBottom = 20;
-const canvasPaddingHorizontal = 20;
-
-const colWidth = 350;
-const minRowHeight = 80;
-const maxRowHeight = 130;
-let rowHeight;
-
-let gridMarginLeft = 0;
 
 let data;
 let projects = [];
@@ -59,7 +48,7 @@ function draw() {
   text("Creative Coding Lab | Spring 2021 | Section 1", 260, 45);
 
   computeLayout();
-  projects.forEach((p) => drawProject(p, projectIsUnderMouse(p)));
+  projects.forEach((p) => drawProjectCard(p, projectIsUnderMouse(p)));
 
 }
 
@@ -116,48 +105,27 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
   pop();
 }
 
-function computeLayout() {
-  rowHeight = maxRowHeight;
-  projects.forEach((p) => (p.y = Infinity));
-  const getBottom = () => Math.max(...projects.map((p) => p.y)) + rowHeight;
-  for (; getBottom() > height && rowHeight > minRowHeight; rowHeight -= 10) {
-    const cols = max(1, floor(width / colWidth));
-    const tx = (width - cols * colWidth) / 2;
-    gridMarginLeft = tx;
-    projects.forEach((p, i) => {
-      const col = i % cols;
-      const row = floor(i / cols);
-      const x = tx + colWidth * col;
-      const y = headerPaddingTop + headerHeight + headingMarginBottom + rowHeight * row;
-      projects[i] = { ...p, x, y, row, col };
-    });
-  }
-  if (getBottom() > height) {
-    resizeCanvas(width, getBottom());
-  }
-}
-
 function windowResized() {
   resizeCanvas(windowWidth - 2 * canvasPaddingHorizontal, windowHeight);
 }
 
-function drawProject({ name, authors, x, y }, highlight) {
+function drawProjectCard({ name, authors, x, y }, isHovered) {
   push();
-  textAlign(CENTER);
   translate(x, y);
+  textAlign(CENTER);
+  textFont("Roboto");
 
-  if (highlight) {
+  if (isHovered) {
     fill(200, 100);
     noStroke();
     rect(0, 0, colWidth, rowHeight, 10);
 
   }
-  fill(highlight ? "red" : 235);
+  fill(isHovered ? "red" : 235);
   textSize(18);
   text("Click to play", 0, 60, colWidth - 20);
 
   fill("black");
-  textFont("Roboto");
   textSize(18);
   textStyle(BOLD);
   text(name, 0, 10, colWidth - 20);
@@ -189,7 +157,3 @@ function mouseMoved() {
     // console.info('default');
   }
 }
-
-const findProjectUnderMouse = () => projects.find(projectIsUnderMouse);
-const projectIsUnderMouse = ({ x, y }) =>
-  x <= mouseX && mouseX < x + colWidth && y <= mouseY && mouseY < y + rowHeight;
