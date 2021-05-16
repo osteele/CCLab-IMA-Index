@@ -12,6 +12,10 @@ function rotateAbout(angle, x, y) {
     translate(-x, -y);
 }
 
+const pointInRect = ({ x, y }, r) =>
+    r.x <= x && x < r.x + r.width &&
+    r.y <= y && y < r.y + r.height;
+
 const lowerSnakeCase = (s) => s.replace(/ /g, "_").toLowerCase();
 
 const renameKeys = (obj, keyTransformer) =>
@@ -23,6 +27,10 @@ const withoutOxford = (ar, s) =>
     ar.length <= 2
         ? ar.join(s)
         : ar.slice(0, ar.length - 1).join(", ") + s + ar[ar.length - 1];
+
+/*
+ * Easing
+ */
 
 function periodicEase(x, period) {
     let q = floor(x / period) * period;

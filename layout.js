@@ -11,26 +11,35 @@ let rowHeight;
 let gridMarginLeft = 0;
 
 function computeLayout() {
-    rowHeight = maxRowHeight;
-    projects.forEach((p) => (p.y = Infinity));
-    const getBottom = () => Math.max(...projects.map((p) => p.y)) + rowHeight;
-    for (; getBottom() > height && rowHeight > minRowHeight; rowHeight -= 10) {
-        const cols = max(1, floor(width / colWidth));
-        const tx = (width - cols * colWidth) / 2;
-        gridMarginLeft = tx;
+    const getBottom = () => Math.max(...projects.map(p => p.y)) + rowHeight;
+    const tooTall = () => getBottom() > height;
+
+    function assignGridPositions(cells, cols, colWidth, rowHeight, leftMargin, topMargin) {
         projects.forEach((p, i) => {
             const col = i % cols;
             const row = floor(i / cols);
-            const x = tx + colWidth * col;
-            const y = headerPaddingTop + headerHeight + headingMarginBottom + rowHeight * row;
+            const x = leftMargin + colWidth * col;
+            const y = topMargin + rowHeight * row;
             projects[i] = { ...p, x, y, row, col };
         });
     }
+
+    projects.forEach(p => { p.y = Infinity });
+    rowHeight = maxRowHeight;
+    while (true) {
+        const cols = max(1, floor(width / colWidth));
+        gridMarginLeft = (width - cols * colWidth) / 2;
+        assignGridPositions(projects, cols, colWidth, rowHeight, gridMarginLeft, headerPaddingTop + headerHeight + headingMarginBottom);
+        if (!tooTall() || rowHeight - 10 >= minRowHeight) break;
+        rowHeight -= 10;
+    }
+
     if (getBottom() > height) {
         resizeCanvas(width, getBottom());
     }
 }
 
 const findProjectUnderMouse = () => projects.find(projectIsUnderMouse);
-const projectIsUnderMouse = ({ x, y }) =>
-    x <= mouseX && mouseX < x + colWidth && y <= mouseY && mouseY < y + rowHeight;
+
+const projectIsUnderMouse = (project) =>
+    pointInRect({ x: mouseX, y: mouseY }, { x: project.x, y: project.y, width: colWidth, height: rowHeight });

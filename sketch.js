@@ -21,10 +21,11 @@ function setup() {
     p.image = loadImage(img_url);
   });
   shuffle(projects, true);
+  computeLayout();
 }
 
 function draw() {
-  background("white");
+  clear();
 
   push();
   translate(10 + gridMarginLeft, 5);
@@ -32,11 +33,11 @@ function draw() {
   logo();
   pop();
 
-  const selectedProject = millis() < lastMouseMoveTime + 30000 && findProjectUnderMouse();
-  if (selectedProject) {
+  const hovered = millis() < lastMouseMoveTime + 30000 && findProjectUnderMouse();
+  if (hovered) {
     push();
     translate(gridMarginLeft, 0);
-    drawHeaderProject(selectedProject, { includeInstructions: true });
+    drawHeaderProject(hovered, { includeInstructions: true });
     pop();
   } else {
     drawHeaderStrip();
@@ -47,7 +48,6 @@ function draw() {
   textSize(40);
   text("Creative Coding Lab | Spring 2021 | Section 1", 260, 45);
 
-  computeLayout();
   projects.forEach((p) => drawProjectCard(p, projectIsUnderMouse(p)));
 
 }
@@ -107,6 +107,7 @@ function drawHeaderProject({ name, image: img, description, instructions }, { in
 
 function windowResized() {
   resizeCanvas(windowWidth - 2 * canvasPaddingHorizontal, windowHeight);
+  computeLayout();
 }
 
 function drawProjectCard({ name, authors, x, y }, isHovered) {
